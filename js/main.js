@@ -8,6 +8,7 @@ $(document).ready(function(){
 	var userInformation={};
 	const tabsName=['#quick-reports','#my-folders','#my-team-folders','#public-folders'];
 	const tabsElement=[$('#quick-reports'),$('#my-folders'),$('#my-team-folders'),$('#public-folders')];
+	const selectsElement=[tabsElement[0].find('select'),tabsElement[2].find('select')];
 	const settingLinksNumber=3;
 
     $.getJSON("data/config.json", function(json) {
@@ -330,7 +331,23 @@ $(document).ready(function(){
 	$(".search-box").submit(function(e){
 		e.preventDefault();
 		val=$(this).find("input").val();
-		$('.notifications').text(val);
+		if(val=="")
+			return;
+		for(var i=0;i<3;i+=2){
+			oneUrlList=tabsUrlList[i];
+			for(j=0;j<oneUrlList.length;j++){
+				if(oneUrlList[j].siteName.indexOf(val) > -1){
+					//selectsElement[i/2].find('option').removeAttr('selected');
+					//selectsElement[i/2].find('option:nth-child('+(j+1)+')').attr("selected","selected");
+					selectsElement[i/2].val(oneUrlList[j].siteURL);
+					tabsElement[i].find("iframe").attr('src',oneUrlList[j].siteURL);
+					window.location.hash=tabsName[i];
+					return;
+				}
+			}
+
+		}
+		$('.notifications').text("The searched report "+val+" was not found.");
 
 	});
 	$('.top-3 button').click(function(e){
