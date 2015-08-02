@@ -414,7 +414,7 @@ li{
 	
 }
 
-.menu:hover ul{
+.nav-section:hover ul{
 display:block;
 position:relative;
 z-index:100;

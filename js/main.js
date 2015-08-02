@@ -330,7 +330,8 @@ $(document).ready(function(){
 	$(".search-box").submit(function(e){
 		e.preventDefault();
 		val=$(this).find("input").val();
-		alert(val);
+		$('.notifications').text(val);
+
 	});
 	$('.top-3 button').click(function(e){
 		closeMenuTop3();
@@ -358,7 +359,8 @@ $(document).ready(function(){
 		tabsElement[numOpenTab].find("iframe").attr('src',$(this).find("option:selected").val());
 		
 	});
-	$(window).on('hashchange',function(){
+	$(window).on('hashchange',function(e){
+		e.preventDefault();
 		var urlTabPage=window.location.hash;
 		var numTab=fromHrefTonumOpenTab(urlTabPage);
 		if (numTab!=undefined){
