@@ -8,13 +8,16 @@ $(document).ready(function(){
 	var userInformation={};
 	const tabsName=['#quick-reports','#my-folders','#my-team-folders','#public-folders'];
 	const tabsElement=[$('#quick-reports'),$('#my-folders'),$('#my-team-folders'),$('#public-folders')];
+	const notificationsElement=$('.notifications');
 	const selectsElement=[tabsElement[0].find('select'),tabsElement[2].find('select')];
 	const settingLinksNumber=3;
-
+	notificationsElement.addClass("invisible");
     $.getJSON("data/config.json", function(json) {
     	//notification
-    	$('.notifications').text(json.notification);
-		
+    	if (json.notification!=undefined){
+    		notificationsElement.text(json.notification);
+			notificationsElement.removeClass("invisible");
+		}
     	//quickActions
     	var quickActions = json.quickActions;
 		
@@ -159,7 +162,7 @@ $(document).ready(function(){
 		$(".tabs >ul>li").css("background-color","grey");
 		var currTab=$('.tabs >ul>li:nth-child('+(numOpenTab+1)+')');
 		currTab.css("background-color","lightgrey");
-		currTab.focus();
+		
 
 		if (numOpenTab==0 || numOpenTab==2){
 			if (tabsUrlList[numOpenTab].length==0)
@@ -342,12 +345,14 @@ $(document).ready(function(){
 					selectsElement[i/2].val(oneUrlList[j].siteURL);
 					tabsElement[i].find("iframe").attr('src',oneUrlList[j].siteURL);
 					window.location.hash=tabsName[i];
+					notificationsElement.addClass("invisible");
 					return;
 				}
 			}
 
 		}
-		$('.notifications').text("The searched report "+val+" was not found.");
+		notificationsElement.text('The searched report "'+val+'" was not found.');
+		
 
 	});
 	$('.top-3 button').click(function(e){
