@@ -413,7 +413,10 @@ li{
 	
 	
 }
-
+.nav-section:hover,
+.nav-section:focus{
+	background-color:rgba(0,0,0,0.5);
+}
 .nav-section:hover ul{
 display:block;
 position:relative;
@@ -424,7 +427,8 @@ section a{
 	color: black;
 	display:block;
 }
-.menu a:hover{
+.menu a:hover,
+.menu a:focus{
 	color: blue;
 }
 
@@ -443,13 +447,20 @@ section a{
 	margin-right:6%;
 	background-color:grey;
 	text-align:center;
-	height:50px;
+	
 	
 	
 }
 
+.tabs>ul a{
+	border:3px solid grey;
+}
+
 .tabs>ul>.active {
 	background-color:lightgrey;
+}
+.tabs .active a{
+	border-color: lightgrey;
 }
 .tabs>ul>li:last-of-type{
 margin:0;
@@ -460,11 +471,20 @@ float:right;
 
 .tabs a{
 	display:block;
-	padding: 15px;
+	padding: 11px;
 	margin:0 auto;
 	color:white;
-	height:100%;
 
+}
+.tabs li a:focus
+{
+	border-color: lightgrey;
+	
+}
+
+.tabs li a:hover{
+	background-color: red;
+	border-color: red;
 }
 
 /*/////////////////////////////tabs section//////////////////////////////////////////////////*/
@@ -475,12 +495,7 @@ background-color:lightgrey;
 }
 
 
-.tabs li a:focus
-{
-	border: 2px solid lightgrey;
-	box-sizing: border-box;
-	margin: 0;
-}
+
 .iframe-menu{
 background-color:lightgrey;
 position:relative;
@@ -579,4 +594,11 @@ padding:18px;
 }
 .errorInput{
 	border:2px solid red;
+}
+
+input[type='text']:focus{
+	background-color: #A3CCCC
+}
+input[type='search']:focus{
+	background-color: #A3CCCC
 }
