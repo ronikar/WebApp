@@ -330,7 +330,7 @@ header img{
 {
 	background-color:rgba(41,34,34,0.7);
 	padding:20px;
-	box-sizing: border-box;
+	
 	
 }
 .notifications{
@@ -437,14 +437,19 @@ section a{
 	padding:0;
 	margin:0;
 }
-.tabs>ul>li{
+.tabs>ul li{
 	display:inline-block;
 	width:20%;
 	margin-right:6%;
 	background-color:grey;
 	text-align:center;
+	height:50px;
 	
 	
+}
+
+.tabs>ul>.active {
+	background-color:lightgrey;
 }
 .tabs>ul>li:last-of-type{
 margin:0;
@@ -458,6 +463,7 @@ float:right;
 	padding: 15px;
 	margin:0 auto;
 	color:white;
+	height:100%;
 
 }
 
@@ -468,10 +474,12 @@ background-color:lightgrey;
 
 }
 
-.tabs li a:hover,
+
 .tabs li a:focus
 {
-	background-color: red;
+	border: 2px solid lightgrey;
+	box-sizing: border-box;
+	margin: 0;
 }
 .iframe-menu{
 background-color:lightgrey;

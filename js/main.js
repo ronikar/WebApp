@@ -6,9 +6,15 @@ $(document).ready(function(){
 	var tabsUrlList=[[],[],[],[]];
 	var menuTabInputElement=[{},{},{},{}];
 	var userInformation={};
+
 	const tabsName=['#quick-reports','#my-folders','#my-team-folders','#public-folders'];
 	const tabsElement=[$('#quick-reports-panel'),$('#my-folders-panel'),$('#my-team-folders-panel'),$('#public-folders-panel')];
+
 	var iframeElements=[];
+	var tabList= $('.tabs>ul');
+	var tabListElements=[];
+
+
 	const notificationsElement=$('.notifications');
 	const selectsElement=[tabsElement[0].find('select'),tabsElement[2].find('select')];
 	const settingLinksNumber=3;
@@ -73,9 +79,17 @@ $(document).ready(function(){
 		return formInput;
 	}
 
+	///preproccess function;
+
 	function findIframes(){
 		for(var i=0;i<tabsElement.length;i++){
 			iframeElements.push(tabsElement[i].find("iframe"));
+		}
+	};
+	function findTabListElement(){
+		
+		for(var i=0;i<tabsElement.length;i++){
+			tabListElements.push(tabList.find('li:nth-child('+(i+1)+')'));
 		}
 	};
 
@@ -83,6 +97,7 @@ $(document).ready(function(){
 	function loadPage(){
 		hideAllTabs();
 		findIframes();
+		findTabListElement();
 		var urlTabPage=window.location.hash;
 		var numTab=fromHrefTonumOpenTab(urlTabPage);
 		var localObject=localStorage.getItem("userInformation");
@@ -109,7 +124,7 @@ $(document).ready(function(){
 			 openTabHtml(urlTabPage);
 			 //window.scroll(0,0);
 		}
-		$('.tabs ul').find('li:nth-child('+(numOpenTab+1)+')').css("background-color","lightgrey");
+		tabListElements[numOpenTab].addClass("active");
 		
 
 	}
@@ -142,9 +157,11 @@ $(document).ready(function(){
 		numOpenTab=fromHrefTonumOpenTab(href);
 		hideAllTabs();
 		tabsElement[numOpenTab].show();
-		$(".tabs >ul>li").css("background-color","grey");
-		var currTab=$('.tabs >ul>li:nth-child('+(numOpenTab+1)+')');
-		currTab.css("background-color","lightgrey");
+		var currTabItem=tabListElements[numOpenTab];
+		for (i=0;i<tabListElements.length;i++){
+			tabListElements[i].removeClass("active");
+		}
+		currTabItem.addClass("active");
 		
 
 		if (numOpenTab==0 || numOpenTab==2){
