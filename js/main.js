@@ -1,9 +1,9 @@
 $(document).ready(function(){
 	//alert(localStorage.getItem("lastname"));
 	var isOpenTabMenu=false;
-	var openTab=0;
-	var numOpenTab=0;
-	var tabsUrlList=[[],[],[],[]];
+	var openTab=0;//contain the currect hash
+	var numOpenTab=0;// contain the position of the currect tab in tabsElement array
+	var tabURLsLists=[[],[],[],[]];
 	var menuTabInputElement=[{},{},{},{}];
 	var userInformation={};
 
@@ -20,49 +20,24 @@ $(document).ready(function(){
 	const settingLinksNumber=3;
 	notificationsElement.addClass("invisible");
 	
-    $.getJSON("data/config.json", function(json) {
-    	//notification
-    	if (json.notification!=undefined){
-    		notificationsElement.text(json.notification);
-			notificationsElement.removeClass("invisible");
+
+	///preproccess functions save the poiners to the elements for quick access
+
+	function findIframes(){
+		for(var i=0;i<tabsElement.length;i++){
+			iframeElements.push(tabsElement[i].find("iframe"));
 		}
-    	//quickActions
-    	var quickActions = json.quickActions;
+	};
+	function findTabListElement(){
 		
-
-    	for(var i=0; i<quickActions.length; i++){
-			
-			var sectionSelector=$(".nav-section:nth-child("+(i+1)+")");
-			sectionSelector.css('background-image', "url(img/icons/"+quickActions[i].icon+".png)");
-			var labelSection=sectionSelector.find(">p");
-			labelSection.empty();
-			labelSection.append(quickActions[i].label);
-			
-			//addd actionsLabel
-			labelSection=sectionSelector.find(" .menu-caption p");
-			labelSection.empty();
-			labelSection.append(quickActions[i].actionsLabel);
-			
-			//add actions list
-			var actionList=sectionSelector.find('.action-list');
-    		actionList.empty();
-    		for(var j=0; j< quickActions[i].actions.length; j++){
-    			actionList.append('<li><a href="'+quickActions[i].actions[j].url+'">'+quickActions[i].actions[j].label+'</a></li>');
-    		}
-    	}
-		//tabs
-		var jsonTabsList=json.tabsList;
-		for(i=0;i<jsonTabsList.length;i++){
-			if(jsonTabsList[i].options.url!=null)
-				iframeElements[i].attr("src",jsonTabsList[i].options.url);
+		for(var i=0;i<tabsElement.length;i++){
+			tabListElements.push(tabList.find('li:nth-child('+(i+1)+')'));
 		}
-		
-
-
-	});
+	};
+    
 
 	function saveDataToLocalStorage(){
-		userInformation={'openTab':openTab,'numOpenTab':numOpenTab,'tabsUrlList':tabsUrlList};
+		userInformation={'openTab':openTab,'numOpenTab':numOpenTab,'tabURLsLists':tabURLsLists};
 		localStorage.setItem("userInformation",JSON.stringify(userInformation));
 	};
 
@@ -79,57 +54,7 @@ $(document).ready(function(){
 		return formInput;
 	}
 
-	///preproccess function;
-
-	function findIframes(){
-		for(var i=0;i<tabsElement.length;i++){
-			iframeElements.push(tabsElement[i].find("iframe"));
-		}
-	};
-	function findTabListElement(){
-		
-		for(var i=0;i<tabsElement.length;i++){
-			tabListElements.push(tabList.find('li:nth-child('+(i+1)+')'));
-		}
-	};
-
-
-	function loadPage(){
-		hideAllTabs();
-		findIframes();
-		findTabListElement();
-		var urlTabPage=window.location.hash;
-		var numTab=fromHrefTonumOpenTab(urlTabPage);
-		var localObject=localStorage.getItem("userInformation");
-		menuTabInputElement[0]=initFormInputsObject(tabsElement[0]);
-		menuTabInputElement[2]=initFormInputsObject(tabsElement[2]);
-		if (localObject!=null){
-			tabsUrlList = JSON.parse(localObject).tabsUrlList;
-		}
-		updateIframeAndOption(0);
-		updateIframeAndOption(2);
-		if (numTab==undefined){
-			if (localStorage.getItem("userInformation")!=null){
-				userInformation=JSON.parse(localStorage.getItem("userInformation"));
-				window.location=userInformation.openTab;
-				//openTabHtml(userInformation.openTab);
-
-			}else
-			{
-				window.location=tabsName[0];
-				//openTabHtml(tabsName[0]);
-			}
-		}
-		else{
-			 openTabHtml(urlTabPage);
-			 //window.scroll(0,0);
-		}
-		tabListElements[numOpenTab].addClass("active");
-		
-
-	}
 	
-	loadPage();
 	function hideAllTabs(){
 		for(var i=0;i<tabsElement.length;i++)
 		tabsElement[i].hide();
@@ -165,7 +90,7 @@ $(document).ready(function(){
 		
 
 		if (numOpenTab==0 || numOpenTab==2){
-			if (tabsUrlList[numOpenTab].length==0)
+			if (tabURLsLists[numOpenTab].length==0)
 				openMenuTop3();
 			else
 			{
@@ -187,7 +112,7 @@ $(document).ready(function(){
 	{
 			
 		tabsElement[numOpenTab].find('.set-setting').css("background-color","white");
-		var urlList=tabsUrlList[numOpenTab];
+		var urlList=tabURLsLists[numOpenTab];
 		var currMenu=menuTabInputElement[numOpenTab];
 		var i;
 		for(i=0;i<settingLinksNumber && i<urlList.length;i++){
@@ -249,7 +174,7 @@ $(document).ready(function(){
 	function updateIframeAndOption(numTab){
 		var currTab=tabsElement[numTab];
 		var currMenu=menuTabInputElement[numTab];
-		var currTabSites = tabsUrlList[numTab];
+		var currTabSites = tabURLsLists[numTab];
 		var siteSelectOption=currTab.find("select");
 		var externalTab=currTab.find(".external-tab");
 		siteSelectOption.empty();
@@ -324,7 +249,7 @@ $(document).ready(function(){
 			if(!flag)
 				return;
 
-		tabsUrlList[numOpenTab] = newTabsSite;
+		tabURLsLists[numOpenTab] = newTabsSite;
 		saveDataToLocalStorage();
 		updateIframeAndOption(numOpenTab);	
 		closeMenuTop3();
@@ -337,7 +262,7 @@ $(document).ready(function(){
 		if(val=="")
 			return;
 		for(var i=0;i<3;i+=2){
-			oneUrlList=tabsUrlList[i];
+			oneUrlList=tabURLsLists[i];
 			for(j=0;j<oneUrlList.length;j++){
 				if(oneUrlList[j].siteName.indexOf(val) > -1){
 					//selectsElement[i/2].find('option').removeAttr('selected');
@@ -394,6 +319,86 @@ $(document).ready(function(){
 		}
     		
 	});
+
+
+	function loadPage(){
+		hideAllTabs();
+		findIframes();
+		findTabListElement();
+		var urlTabPage=window.location.hash;
+		var numTab=fromHrefTonumOpenTab(urlTabPage);
+		var localObject=localStorage.getItem("userInformation");
+		menuTabInputElement[0]=initFormInputsObject(tabsElement[0]);
+		menuTabInputElement[2]=initFormInputsObject(tabsElement[2]);
+		if (localObject!=null){
+			tabURLsLists = JSON.parse(localObject).tabURLsLists;
+			if (tabURLsLists==undefined)
+				tabURLsLists=[[],[],[],[]];
+		}
+		updateIframeAndOption(0);
+		updateIframeAndOption(2);
+		if (numTab==undefined){
+			if (localStorage.getItem("userInformation")!=null){
+				userInformation=JSON.parse(localStorage.getItem("userInformation"));
+				window.location=userInformation.openTab;
+				//openTabHtml(userInformation.openTab);
+
+			}else
+			{
+				window.location=tabsName[0];
+				//openTabHtml(tabsName[0]);
+			}
+		}
+		else{
+			 openTabHtml(urlTabPage);
+			 //window.scroll(0,0);
+		}
+		tabListElements[numOpenTab].addClass("active");
+	}
+	
+	loadPage();
+
+
+	$.getJSON("data/config.json", function(json) {
+    	//notification
+    	if (json.notification!=undefined){
+    		notificationsElement.text(json.notification);
+			notificationsElement.removeClass("invisible");
+		}
+    	//quickActions
+    	var quickActions = json.quickActions;
+		
+
+    	for(var i=0; i<quickActions.length; i++){
+			
+			var sectionSelector=$(".nav-section:nth-child("+(i+1)+")");
+			sectionSelector.css('background-image', "url(img/icons/"+quickActions[i].icon+".png)");
+			var labelSection=sectionSelector.find(">p");
+			labelSection.empty();
+			labelSection.append(quickActions[i].label);
+			
+			//addd actionsLabel
+			labelSection=sectionSelector.find(" .menu-caption p");
+			labelSection.empty();
+			labelSection.append(quickActions[i].actionsLabel);
+			
+			//add actions list
+			var actionList=sectionSelector.find('.action-list');
+    		actionList.empty();
+    		for(var j=0; j< quickActions[i].actions.length; j++){
+    			actionList.append('<li><a href="'+quickActions[i].actions[j].url+'">'+quickActions[i].actions[j].label+'</a></li>');
+    		}
+    	}
+		//tabs
+		var jsonTabsList=json.tabsList;
+		for(i=0;i<jsonTabsList.length;i++){
+			if(jsonTabsList[i].options.url!=null)
+				iframeElements[i].attr("src",jsonTabsList[i].options.url);
+		}
+		
+	});
+
+
 	
 });
 
