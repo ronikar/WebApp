@@ -7,11 +7,18 @@ $(document).ready(function(){
 	var menuTabInputElement=[{},{},{},{}];
 	var userInformation={};
 	const tabsName=['#quick-reports','#my-folders','#my-team-folders','#public-folders'];
-	const tabsElement=[$('#quick-reports'),$('#my-folders'),$('#my-team-folders'),$('#public-folders')];
+	const tabsElement=[$('#quick-reports-panel'),$('#my-folders-panel'),$('#my-team-folders-panel'),$('#public-folders-panel')];
+	var iframeElements=[];
 	const notificationsElement=$('.notifications');
 	const selectsElement=[tabsElement[0].find('select'),tabsElement[2].find('select')];
 	const settingLinksNumber=3;
 	notificationsElement.addClass("invisible");
+	function findIframes(){
+		for(var i=0;i<tabsElement.length;i++){
+			iframeElements.push(tabsElement[i].find("iframe"));
+		}
+	};
+
     $.getJSON("data/config.json", function(json) {
     	//notification
     	if (json.notification!=undefined){
@@ -73,6 +80,7 @@ $(document).ready(function(){
 
 	function loadPage(){
 		hideAllTabs();
+		findIframes();
 		var urlTabPage=window.location.hash;
 		var numTab=fromHrefTonumOpenTab(urlTabPage);
 		var localObject=localStorage.getItem("userInformation");
@@ -106,10 +114,8 @@ $(document).ready(function(){
 	
 	loadPage();
 	function hideAllTabs(){
-		$('#quick-reports').hide();
-		$('#my-folders').hide();
-		$('#my-team-folders').hide();
-		$('#public-folders').hide();
+		for(var i=0;i<tabsElement.length;i++)
+		tabsElement[i].hide();
 		
 	};
 	
@@ -133,32 +139,7 @@ $(document).ready(function(){
 		openTab=href;
 		numOpenTab=fromHrefTonumOpenTab(href);
 		hideAllTabs();
-		var currTab=$(href);
-		switch(href) {
-			case "#quick-reports":
-				
-				
-				currTab.show();
-				$(this).css("background-color","lightgrey");
-				closeMenuTop3();
-				//openTab=1;
-				break;
-			case "#my-folders":
-				$('#my-folders').show();
-			
-				//openTab=2;
-				break;
-			case "#my-team-folders":
-				$('#my-team-folders').show();
-			
-				//openTab=3;
-				break;
-			case "#public-folders":
-				$('#public-folders').show();
-				//openTab=4;
-				break;
-	   
-		}
+		tabsElement[numOpenTab].show();
 		$(".tabs >ul>li").css("background-color","grey");
 		var currTab=$('.tabs >ul>li:nth-child('+(numOpenTab+1)+')');
 		currTab.css("background-color","lightgrey");
@@ -226,7 +207,7 @@ $(document).ready(function(){
     });
 	$('.external-tab').click(function(e){
 		e.preventDefault();
-		var win = window.open($(openTab +" iframe").attr('src'), '_blank');
+		var win = window.open(iframeElements[numOpenTab].attr('src'), '_blank');
   		win.focus();
 	});
 	
@@ -255,7 +236,7 @@ $(document).ready(function(){
 		siteSelectOption.empty();
 		if(currTabSites.length != 0)
 		{
-			currTab.find("iframe").attr("src", currTabSites[0].siteURL);
+			iframeElements[numOpenTab].attr("src", currTabSites[0].siteURL);
 			for(var i=0; i< currTabSites.length; i++){
 				siteSelectOption.append('<option value="'+currTabSites[i].siteURL+'"">'+currTabSites[i].siteName+'</option>');
 			}
@@ -264,7 +245,7 @@ $(document).ready(function(){
 
 		}else
 		{
-			currTab.find("iframe").removeAttr("src");
+			iframeElements[numOpenTab].removeAttr("src");
 			siteSelectOption.hide();
 			externalTab.hide();
 		}
@@ -378,7 +359,7 @@ $(document).ready(function(){
     	
 	});
 	$("select").change(function(){
-		tabsElement[numOpenTab].find("iframe").attr('src',$(this).find("option:selected").val());
+		iframeElements[numOpenTab].attr('src',$(this).find("option:selected").val());
 		
 	});
 	$(window).on('hashchange',function(e){
