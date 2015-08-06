@@ -13,12 +13,7 @@ $(document).ready(function(){
 	const selectsElement=[tabsElement[0].find('select'),tabsElement[2].find('select')];
 	const settingLinksNumber=3;
 	notificationsElement.addClass("invisible");
-	function findIframes(){
-		for(var i=0;i<tabsElement.length;i++){
-			iframeElements.push(tabsElement[i].find("iframe"));
-		}
-	};
-
+	
     $.getJSON("data/config.json", function(json) {
     	//notification
     	if (json.notification!=undefined){
@@ -53,7 +48,7 @@ $(document).ready(function(){
 		var jsonTabsList=json.tabsList;
 		for(i=0;i<jsonTabsList.length;i++){
 			if(jsonTabsList[i].options.url!=null)
-				tabsElement[i].find("iframe").attr("src",jsonTabsList[i].options.url);
+				iframeElements[i].attr("src",jsonTabsList[i].options.url);
 		}
 		
 
@@ -77,6 +72,13 @@ $(document).ready(function(){
 		}
 		return formInput;
 	}
+
+	function findIframes(){
+		for(var i=0;i<tabsElement.length;i++){
+			iframeElements.push(tabsElement[i].find("iframe"));
+		}
+	};
+
 
 	function loadPage(){
 		hideAllTabs();
@@ -105,7 +107,7 @@ $(document).ready(function(){
 		}
 		else{
 			 openTabHtml(urlTabPage);
-			 window.scroll(0,0);
+			 //window.scroll(0,0);
 		}
 		$('.tabs ul').find('li:nth-child('+(numOpenTab+1)+')').css("background-color","lightgrey");
 		
@@ -324,7 +326,7 @@ $(document).ready(function(){
 					//selectsElement[i/2].find('option').removeAttr('selected');
 					//selectsElement[i/2].find('option:nth-child('+(j+1)+')').attr("selected","selected");
 					selectsElement[i/2].val(oneUrlList[j].siteURL);
-					tabsElement[i].find("iframe").attr('src',oneUrlList[j].siteURL);
+					iframeElements[i].attr('src',oneUrlList[j].siteURL);
 					window.location.hash=tabsName[i];
 					notificationsElement.addClass("invisible");
 					return;
@@ -332,6 +334,7 @@ $(document).ready(function(){
 			}
 
 		}
+		notificationsElement.removeClass("invisible");
 		notificationsElement.text('The searched report "'+val+'" was not found.');
 		
 
@@ -368,6 +371,9 @@ $(document).ready(function(){
 		var numTab=fromHrefTonumOpenTab(urlTabPage);
 		if (numTab!=undefined){
 			openTabHtml(window.location.hash);
+		}
+		else{
+			window.location.hash=userInformation.openTab;
 		}
     		
 	});
