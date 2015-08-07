@@ -180,7 +180,7 @@ $(document).ready(function(){
 		siteSelectOption.empty();
 		if(currTabSites.length != 0)
 		{
-			iframeElements[numOpenTab].attr("src", currTabSites[0].siteURL);
+			iframeElements[numTab].attr("src", currTabSites[0].siteURL);
 			for(var i=0; i< currTabSites.length; i++){
 				siteSelectOption.append('<option value="'+currTabSites[i].siteURL+'"">'+currTabSites[i].siteName+'</option>');
 			}
