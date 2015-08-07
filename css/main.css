@@ -538,7 +538,6 @@ select{
 
 form .img{
 	border:none;
-	background-color:lightgrey;
 	float: right;
 	background-position: center;
 	background-repeat: no-repeat;	
@@ -553,7 +552,10 @@ form .img{
 	padding:20px;
 }
 .set-setting{
-padding:18px;
+	padding:18px;
+}
+.openMenu{
+	background-color: white;
 }
 .top-3{
 	clear:both;

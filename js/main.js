@@ -3,22 +3,24 @@ $(document).ready(function(){
 	var isOpenTabMenu=false;
 	var openTab=0;//contain the currect hash
 	var numOpenTab=0;// contain the position of the currect tab in tabsElement array
-	var tabURLsLists=[[],[],[],[]];
+	var tabURLsLists=[[],[],[],[]];//
 	var menuTabInputElement=[{},{},{},{}];
-	var userInformation={};
+	var userInformation={};//element the contain the data that save to local storage , also use to reload the local storage from the local computer
 
-	const tabsName=['#quick-reports','#my-folders','#my-team-folders','#public-folders'];
-	const tabsElement=[$('#quick-reports-panel'),$('#my-folders-panel'),$('#my-team-folders-panel'),$('#public-folders-panel')];
+	const tabsName=['#quick-reports','#my-folders','#my-team-folders','#public-folders'];//contain the hash name of each tab
+	const tabsElement=[$('#quick-reports-panel'),$('#my-folders-panel'),$('#my-team-folders-panel'),$('#public-folders-panel')];//array. each cell is panel element
 
-	var iframeElements=[];
+	var iframeElements=[];//pointers of the frame for quick access/
 	var tabList= $('.tabs>ul');
 	var tabListElements=[];
 
 
 	const notificationsElement=$('.notifications');
 	const selectsElement=[tabsElement[0].find('select'),tabsElement[2].find('select')];
-	const settingLinksNumber=3;
-	notificationsElement.addClass("invisible");
+	
+
+	const settingLinksNumber=3;//num of link i want to save
+	
 	
 
 	///preproccess functions save the poiners to the elements for quick access
@@ -34,15 +36,9 @@ $(document).ready(function(){
 			tabListElements.push(tabList.find('li:nth-child('+(i+1)+')'));
 		}
 	};
-    
-
-	function saveDataToLocalStorage(){
-		userInformation={'openTab':openTab,'numOpenTab':numOpenTab,'tabURLsLists':tabURLsLists};
-		localStorage.setItem("userInformation",JSON.stringify(userInformation));
-	};
 
 	function initFormInputsObject(elem){
-		//alert(elem.attr('id'));
+		//get menu form and return the pointers of the input text in the form
 		var formInput=[];
 		for(var i=1; i<= settingLinksNumber; i++){
 			var obj = {
@@ -53,20 +49,32 @@ $(document).ready(function(){
 		}
 		return formInput;
 	}
+    
+	//helper function:
+
+	//save data to local storage
+	function saveDataToLocalStorage(){
+		userInformation={'openTab':openTab,'numOpenTab':numOpenTab,'tabURLsLists':tabURLsLists};
+		localStorage.setItem("userInformation",JSON.stringify(userInformation));
+	};
 
 	
+
+	//hide all  tab-panels
 	function hideAllTabs(){
 		for(var i=0;i<tabsElement.length;i++)
 		tabsElement[i].hide();
 		
 	};
 	
+	//get number of tab and return hash name that suitable him.
 	function fromNumToIdTab(numOpenTab)
 	{
 		return tabsName[numOpenTab];
 	};
 
 
+	//get hash-name and return the position in tabsElement that suitable to the hash.
 	function fromHrefTonumOpenTab(href)
 	{
 		for(var i=0;i<tabsName.length;i++){
@@ -76,7 +84,7 @@ $(document).ready(function(){
 		
 	};
 
-	
+	//get hash-name and open the panel that suitable him
 	function openTabHtml(href){
 		openTab=href;
 		numOpenTab=fromHrefTonumOpenTab(href);
@@ -102,22 +110,27 @@ $(document).ready(function(){
 		saveDataToLocalStorage();
 	};
 	
+	//close the menu of the URL list in the panel
 	function closeMenuTop3()
 	{
 		tabsElement[numOpenTab].find('.top-3').hide();
-		tabsElement[numOpenTab].find('.set-setting').css("background-color","lightgrey");
+		tabsElement[numOpenTab].find('.set-setting').removeClass('openMenu');
 		isOpenTabMenu=false;
 	}
+
+	//open the menu of the URL list in the panel
 	function openMenuTop3()
 	{
 			
-		tabsElement[numOpenTab].find('.set-setting').css("background-color","white");
+		tabsElement[numOpenTab].find('.set-setting').addClass('openMenu');
 		var urlList=tabURLsLists[numOpenTab];
 		var currMenu=menuTabInputElement[numOpenTab];
 		var i;
 		for(i=0;i<settingLinksNumber && i<urlList.length;i++){
 			currMenu[i].siteURL.val(urlList[i].siteURL);
 			currMenu[i].siteName.val(urlList[i].siteName);
+			currMenu[i].siteURL.removeClass("errorInput");
+			currMenu[i].siteName.removeClass("errorInput");
 		}
 		for(var j=i;j<settingLinksNumber;j++){
 			currMenu[j].siteURL.val("");
@@ -126,29 +139,65 @@ $(document).ready(function(){
 			currMenu[j].siteName.removeClass("errorInput");
 			
 		}
-		currMenu[0].siteName.focus();
-		tabsElement[numOpenTab].find('.top-3 input[type="submit"]').removeAttr('disabled');
+		
 		tabsElement[numOpenTab].find('.top-3').show();
+		currMenu[0].siteName.focus();
 		isOpenTabMenu=true;
 		
 	};
 
+	//after click on save this function update the url list, show/hide external tab and update the src of iframe
+	function updateIframeAndOption(numTab){
+		var currTab=tabsElement[numTab];
+		var currMenu=menuTabInputElement[numTab];
+		var currTabSites = tabURLsLists[numTab];
+		var siteSelectOptions=currTab.find("select");
+		var externalTab=currTab.find(".external-tab");
+		siteSelectOptions.empty();
+		if(currTabSites.length != 0)
+		{
+			iframeElements[numTab].attr("src", currTabSites[0].siteURL);
+			for(var i=0; i< currTabSites.length; i++){
+				siteSelectOptions.append('<option value="'+currTabSites[i].siteURL+'"">'+currTabSites[i].siteName+'</option>');
+			}
+			siteSelectOptions.show();
+			externalTab.show();
 
+		}else
+		{
+			iframeElements[numOpenTab].removeAttr("src");
+			siteSelectOptions.hide();
+			externalTab.hide();
+		}
+		
+
+	};
+
+	//check if the url the user entered is valid
+	function validateURL(text) {
+      var urlregex = new RegExp(
+            "^(http|https|ftp)\://([a-zA-Z0-9\.\-]+(\:[a-zA-Z0-9\.&amp;%\$\-]+)*@)*((25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[1-9])\.(25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[1-9]|0)\.(25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[1-9]|0)\.(25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[0-9])|([a-zA-Z0-9\-]+\.)*[a-zA-Z0-9\-]+\.(com|edu|gov|int|mil|net|org|biz|arpa|info|name|pro|aero|coop|museum|[a-zA-Z]{2}))(\:[0-9]+)*(/($|[a-zA-Z0-9\.\,\?\'\\\+&amp;%\$#\=~_\-]+))*$");
+      return urlregex.test(text);
+    };
+
+	//events:
 
 	$('.set-setting').click(function(e){
 		e.preventDefault();
-		$('.top-3').toggle();
 		if (isOpenTabMenu==false)
 		{
 			openMenuTop3();
+			isOpenTabMenu=true;
+
 		}
 		else
 		{
 			isOpenTabMenu=false;
-			$(this).css("background-color","lightgrey");
+			closeMenuTop3();
 		}
 		
     });
+
 	$('.external-tab').click(function(e){
 		e.preventDefault();
 		var win = window.open(iframeElements[numOpenTab].attr('src'), '_blank');
@@ -171,31 +220,7 @@ $(document).ready(function(){
 		}
 	});
 
-	function updateIframeAndOption(numTab){
-		var currTab=tabsElement[numTab];
-		var currMenu=menuTabInputElement[numTab];
-		var currTabSites = tabURLsLists[numTab];
-		var siteSelectOption=currTab.find("select");
-		var externalTab=currTab.find(".external-tab");
-		siteSelectOption.empty();
-		if(currTabSites.length != 0)
-		{
-			iframeElements[numTab].attr("src", currTabSites[0].siteURL);
-			for(var i=0; i< currTabSites.length; i++){
-				siteSelectOption.append('<option value="'+currTabSites[i].siteURL+'"">'+currTabSites[i].siteName+'</option>');
-			}
-			siteSelectOption.show();
-			externalTab.show();
-
-		}else
-		{
-			iframeElements[numOpenTab].removeAttr("src");
-			siteSelectOption.hide();
-			externalTab.hide();
-		}
-		
-
-	};
+	
 	
 	$('.top-3 input[type="submit"]').click(function(e){
 		e.preventDefault();
@@ -288,15 +313,7 @@ $(document).ready(function(){
 	
 	});
 	
-	///////////////////////////////////////////////////////////////
-	function validateURL(text) 
-	//check if the url the user entered is valid
-	{
-      var urlregex = new RegExp(
-            "^(http|https|ftp)\://([a-zA-Z0-9\.\-]+(\:[a-zA-Z0-9\.&amp;%\$\-]+)*@)*((25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[1-9])\.(25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[1-9]|0)\.(25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[1-9]|0)\.(25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[0-9])|([a-zA-Z0-9\-]+\.)*[a-zA-Z0-9\-]+\.(com|edu|gov|int|mil|net|org|biz|arpa|info|name|pro|aero|coop|museum|[a-zA-Z]{2}))(\:[0-9]+)*(/($|[a-zA-Z0-9\.\,\?\'\\\+&amp;%\$#\=~_\-]+))*$");
-      return urlregex.test(text);
-    };
-
+	
 	$('.top-3').keyup(function(e){
 		if (e.keyCode == 27) {
 			closeMenuTop3(); 
@@ -320,16 +337,22 @@ $(document).ready(function(){
     		
 	});
 
-
+	//functions that call when page loading
 	function loadPage(){
-		hideAllTabs();
+		//preproccess 
 		findIframes();
 		findTabListElement();
-		var urlTabPage=window.location.hash;
-		var numTab=fromHrefTonumOpenTab(urlTabPage);
-		var localObject=localStorage.getItem("userInformation");
 		menuTabInputElement[0]=initFormInputsObject(tabsElement[0]);
 		menuTabInputElement[2]=initFormInputsObject(tabsElement[2]);
+		//start load page
+		hideAllTabs();
+		notificationsElement.addClass("invisible");
+
+		var urlTabPage=window.location.hash;
+		var numTab=fromHrefTonumOpenTab(urlTabPage);
+
+		var localObject=localStorage.getItem("userInformation");
+		
 		if (localObject!=null){
 			tabURLsLists = JSON.parse(localObject).tabURLsLists;
 			if (tabURLsLists==undefined)
