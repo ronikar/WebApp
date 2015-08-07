@@ -181,7 +181,7 @@ $(document).ready(function(){
     };
 
 	//events:
-
+	//click set-sitting button
 	$('.set-setting').click(function(e){
 		e.preventDefault();
 		if (isOpenTabMenu==false)
@@ -198,12 +198,15 @@ $(document).ready(function(){
 		
     });
 
+
+	//click external button
 	$('.external-tab').click(function(e){
 		e.preventDefault();
 		var win = window.open(iframeElements[numOpenTab].attr('src'), '_blank');
   		win.focus();
 	});
 	
+	//click on tab item
 	$(".tabs >ul>li").click(function(e){
 		e.preventDefault();
 		me=$(this);
@@ -216,12 +219,11 @@ $(document).ready(function(){
 		else
 		{
 			window.location = hash;
-			 //openTabHtml(hash);
 		}
 	});
 
 	
-	
+	//submit the form
 	$('.top-3 input[type="submit"]').click(function(e){
 		e.preventDefault();
 		var currMenu=menuTabInputElement[numOpenTab];
@@ -290,8 +292,6 @@ $(document).ready(function(){
 			oneUrlList=tabURLsLists[i];
 			for(j=0;j<oneUrlList.length;j++){
 				if(oneUrlList[j].siteName.indexOf(val) > -1){
-					//selectsElement[i/2].find('option').removeAttr('selected');
-					//selectsElement[i/2].find('option:nth-child('+(j+1)+')').attr("selected","selected");
 					selectsElement[i/2].val(oneUrlList[j].siteURL);
 					iframeElements[i].attr('src',oneUrlList[j].siteURL);
 					window.location.hash=tabsName[i];
@@ -306,24 +306,28 @@ $(document).ready(function(){
 		
 
 	});
+
+	// press Cancel
 	$('.top-3 button').click(function(e){
 		closeMenuTop3();
-		return false;
-
-	
+		return false;	
 	});
 	
-	
+	//press ESC
 	$('.top-3').keyup(function(e){
 		if (e.keyCode == 27) {
 			closeMenuTop3(); 
     	}	
     	
 	});
+
+
 	$("select").change(function(){
 		iframeElements[numOpenTab].attr('src',$(this).find("option:selected").val());
 		
 	});
+
+	//change hash
 	$(window).on('hashchange',function(e){
 		e.preventDefault();
 		var urlTabPage=window.location.hash;
@@ -379,9 +383,6 @@ $(document).ready(function(){
 		tabListElements[numOpenTab].addClass("active");
 	}
 	
-	loadPage();
-
-
 	$.getJSON("data/config.json", function(json) {
     	//notification
     	if (json.notification!=undefined){
@@ -421,6 +422,7 @@ $(document).ready(function(){
 		
 	});
 
+	loadPage();
 
 	
 });
