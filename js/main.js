@@ -1,5 +1,5 @@
 $(document).ready(function(){
-	//alert(localStorage.getItem("lastname"));
+	
 	var isOpenTabMenu=false;
 	var openTab=0;//contain the currect hash
 	var numOpenTab=0;// contain the position of the currect tab in tabsElement array
