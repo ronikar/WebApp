@@ -308,7 +308,7 @@ header img{
 
 .layout-wrap{
 	max-width: 1100px;
-	min-width: 600px;
+	min-width: 700px;
 	margin: 0 auto;
 	position:relative;
 }
@@ -571,14 +571,15 @@ form .img{
 	width:95%;
 	margin:0 auto;
 }
-.top-3 li{
+.top-3 fieldset{
 	padding:5px;
-	margin-top:20px;
 	background:lightgrey;
+	margin: 20px 5% 0 5%;
+	position: relative;
 	
 }
 
-.top-3 li >input{
+.top-3 fieldset >input{
 	width:25%;
 	margin-left:10px;
 	max-width:350px;
@@ -590,22 +591,31 @@ input[type='text']:focus{
 	background-color:#D6D6C2
 }
 
-.top-3 li >legend{
-	display: inline-block;
-	padding-right:3%;
+.top-3 fieldset >legend{
+	float: left;
+	padding-right:5%;
+	padding-top: 2px;
 }
 .top-3 *{
 	 border-radius: 5px;
 }
-
+.top-3 button,
 .top-3 input[type="submit"]{
 	border:none;
 	background-color:black;
 	color:white;
-	padding:10px 30px 10px 30px;
+	padding:0 30px 0 30px;
+	height: 40px;
 	margin:20px 10px 20px 0;
 	float:right;
 }
+.top-3 input[type="submit"]{
+	background-color: black;
+}
+.top-3 button{
+	background-color: grey;
+}
+
 .top-3 input[type="submit"]:focus,
 .top-3 input[type="submit"]:hover,
 .top-3 button:focus,
@@ -616,12 +626,7 @@ input[type='text']:focus{
 }
 
 
-.top-3 button{
-	border:none;
-	padding:10px 30px 10px 30px;
-	margin:20px 10px 20px 0;
-	float:right;
-}
+
 .errorInput{
 	border:2px solid red;
 }

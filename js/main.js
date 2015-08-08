@@ -42,8 +42,8 @@ $(document).ready(function(){
 		var formInput=[];
 		for(var i=1; i<= settingLinksNumber; i++){
 			var obj = {
-				siteName : elem.find(".top-3 li:nth-child("+i+") input[name^='WebsiteName']"),
-				siteURL : elem.find(".top-3 li:nth-child("+i+") input[name^='WebsiteUrl']")
+				siteName : elem.find(".top-3 fieldset:nth-child("+i+") input[name^='WebsiteName']"),
+				siteURL : elem.find(".top-3 fieldset:nth-child("+i+") input[name^='WebsiteUrl']")
 			};
 			formInput.push(obj);
 		}
