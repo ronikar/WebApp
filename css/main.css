@@ -282,10 +282,6 @@ textarea {
 
 /*/////////////////////////////////////////////////////////////////////////////////////*/
 
-html{
-	font-size: 1em;
-	line-height: 1.4;
-}
 * {
   box-sizing: border-box;
 }
@@ -323,6 +319,9 @@ header img{
 	right:0;
 	padding-top:20px;
 }
+input[type='search']:focus{
+	background-color:#CCFFFF
+}
 
 /*/////////////////////////////section2//////////////////////////////////////////////////*/
 
@@ -335,9 +334,10 @@ header img{
 }
 .notifications{
 	background-color:lightgrey;
-	padding-left:20px;
+	/*padding-left:20px;*/
 	margin-bottom:20px;
-	
+	border-radius: 2px;
+	text-align: center;
 }
 
 nav{
@@ -349,7 +349,7 @@ nav{
 	mergin:0;
 }
 
-/*/////////////////////////////section4//////////////////////////////////////////////////*/
+/*/////////////////////////////section3//////////////////////////////////////////////////*/
 .nav-section{
 	width:30%;
 	display:inline-block;
@@ -361,7 +361,7 @@ nav{
 	color:white;
 	height:150px;
 	vertical-align:top;
-
+	border-radius: 5px 5px 0px 0px;
 	
 }
 
@@ -384,7 +384,7 @@ li{
 	text-align:left;
 	background-color:lightgrey;
 	color:black;
-	
+	border-radius: 0px 0px 2px 2px;
 }
 .menu  p{
 	position:relative;
@@ -448,7 +448,7 @@ section a{
 	color: blue;
 }
 
-
+/*///////////////////////////////////section 4//////////////////////////////*/
 .tabs{
 	margin-top: 40px;
 }
@@ -457,6 +457,7 @@ section a{
 	padding:0;
 	margin:0;
 }
+
 .tabs>ul li{
 	display:inline-block;
 	width:20%;
@@ -464,7 +465,7 @@ section a{
 	background-color:grey;
 	text-align:center;
 	
-	
+	border-radius: 5px 5px 0px 0px;
 	
 }
 
@@ -472,28 +473,28 @@ section a{
 	border-width:3px 3px 0 3px;
 	border-color:grey;
 	border-style: solid;
+	display:block;
+	padding: 11px;
+	margin:0 auto;
+	color:white;
+	border-radius: 5px 5px 0px 0px;
 }
 
 .tabs>ul>.active {
 	background-color:lightgrey;
+
 }
 .tabs .active a{
 	border-color: lightgrey;
-}
+	color:black;
+} 
+
 .tabs>ul>li:last-of-type{
 margin:0;
 float:right;
 }
 
 
-
-.tabs a{
-	display:block;
-	padding: 11px;
-	margin:0 auto;
-	color:white;
-
-}
 .tabs li a:focus
 {
 	border-color: lightgrey;
@@ -505,7 +506,7 @@ float:right;
 	border-color: red;
 }
 
-/*/////////////////////////////tabs section//////////////////////////////////////////////////*/
+/*/////////////////////////////panels section//////////////////////////////////////////////////*/
 .tabs>div{
 min-height:300px;
 background-color:lightgrey;
@@ -548,7 +549,6 @@ form .img{
 }
 
 .external-tab{
-	/*padding:20px 20px 0px 20px;*/
 	padding:20px;
 }
 .set-setting{
@@ -585,9 +585,17 @@ form .img{
 	margin-right:30px;
 	height:30px;
 }
+
+input[type='text']:focus{
+	background-color:#D6D6C2
+}
+
 .top-3 li >legend{
 	display: inline-block;
 	padding-right:3%;
+}
+.top-3 *{
+	 border-radius: 5px;
 }
 
 .top-3 input[type="submit"]{
@@ -598,14 +606,16 @@ form .img{
 	margin:20px 10px 20px 0;
 	float:right;
 }
-.top-3 input[type="submit"]:focus{
+.top-3 input[type="submit"]:focus,
+.top-3 input[type="submit"]:hover,
+.top-3 button:focus,
+.top-3 button:hover{
 	
-	background-color:red;
-	
+	background-color:#CC7A00;
+	color:white;
 }
-.top-3 input[disabled="disabled"]{
-	opacity: 0.5;
-}
+
+
 .top-3 button{
 	border:none;
 	padding:10px 30px 10px 30px;
@@ -616,9 +626,5 @@ form .img{
 	border:2px solid red;
 }
 
-input[type='text']:focus{
-	background-color: #A3CCCC
-}
-input[type='search']:focus{
-	background-color: #A3CCCC
-}
+
+
