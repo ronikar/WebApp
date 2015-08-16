@@ -363,9 +363,7 @@ $(document).ready(function(){
 		if (numTab!=undefined){
 			openTabHtml(window.location.hash);
 		}
-		else{
-			window.location.hash=userInformation.openTab;
-		}
+		
     		
 	});
 
