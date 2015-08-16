@@ -1,29 +1,72 @@
 $(document).ready(function(){
 	
-	var isOpenTabMenu=false;
-	var openTab=0;//contain the currect hash
-	var numOpenTab=0;// contain the position of the currect tab in tabsElement array
-	var tabURLsLists=[[],[],[],[]];//
-	var menuTabInputElement=[{},{},{},{}];
+	///////------Varialbes and Constants.-------///////
+	
+	//////----- local storage-----///////
 	var userInformation={};//element the contain the data that save to local storage , also use to reload the local storage from the local computer
+	var openTab=0;//contain the currect hash.
+	var numOpenTab=0;// contain the position of the currect tab in tabsElement array.
+	var tabURLsLists=[[],[],[],[]];//contain the website(name and url) that user save.
+	
+	///////------ notifications part-----//////
+	const notificationsElement=$('.notifications');
 
+	////////-------- nav part.-----///////
+	var navSectionElement= $('.nav-section');
+
+	///////-----tabs part-------////////
+	//for tabs menu.
+	var tabList= $('.tabs>ul');
+	var tabListElements=[];
 	const tabsName=['#quick-reports','#my-folders','#my-team-folders','#public-folders'];//contain the hash name of each tab
 	const tabsElement=[$('#quick-reports-panel'),$('#my-folders-panel'),$('#my-team-folders-panel'),$('#public-folders-panel')];//array. each cell is panel element
 
-	var iframeElements=[];//pointers of the frame for quick access/
-	var tabList= $('.tabs>ul');
-	var tabListElements=[];
+	//for dropdown menu(top-3)
+	var isOpenTabMenu=false;//if top-3 menu is open
+	const settingLinksNumber=3;//num of link i want to save
+	var menuTabInputElement=[{},{},{},{}];
 
+	
+	//for iframes.
+	var iframeElements=[];//pointers of the frame for quick access.
 
-	const notificationsElement=$('.notifications');
+	//for custom tabs- select element.
 	const selectsElement=[tabsElement[0].find('select'),tabsElement[2].find('select')];
 	
 
-	const settingLinksNumber=3;//num of link i want to save
-	
+	//END Varialbes and Constants.
 	
 
-	///preproccess functions save the poiners to the elements for quick access
+	/////test 
+	
+	$('.nav-section').keydown(function(e){
+		if (e.keyCode == 13) {
+			if ($(this).hasClass("active-nav"))
+				$(this).removeClass("active-nav");
+			else
+				$(this).addClass("active-nav");
+    	}
+    	if (e.keyCode == 27) {
+    		$(this).removeClass("active-nav");
+    	}	
+	});
+
+	$('.nav-section').focus(function(){
+		navSectionElement.removeClass("active-nav");
+	});
+	$('.tabs>ul a').focus(function(){
+		navSectionElement.removeClass("active-nav");
+	});
+	$('.search-box input').focus(function(){
+		navSectionElement.removeClass("active-nav");
+	});
+	///////////////// END test  ////////////////////////
+
+
+	/////----Methods------///////
+
+	//////-----preproccess functions------////////
+	////// save the poiners to the elements for quick access---//////////
 
 	function findIframes(){
 		for(var i=0;i<tabsElement.length;i++){
@@ -50,8 +93,10 @@ $(document).ready(function(){
 		return formInput;
 	}
     
-	//helper function:
+	/////////----------helper function---------//////////
 
+
+	///------local storage part------///
 	//save data to local storage
 	function saveDataToLocalStorage(){
 		userInformation={'openTab':openTab,'numOpenTab':numOpenTab,'tabURLsLists':tabURLsLists};
@@ -59,7 +104,7 @@ $(document).ready(function(){
 	};
 
 	
-
+	/////------tabs part------////
 	//hide all  tab-panels
 	function hideAllTabs(){
 		for(var i=0;i<tabsElement.length;i++)
@@ -109,8 +154,9 @@ $(document).ready(function(){
 		}
 		saveDataToLocalStorage();
 	};
-	
-	//close the menu of the URL list in the panel
+
+	////----dropdown menu (top-3)-----/////
+	//close the menu of the URL list in the panel.
 	function closeMenuTop3()
 	{
 		tabsElement[numOpenTab].find('.top-3').hide();
@@ -180,7 +226,11 @@ $(document).ready(function(){
       return urlregex.test(text);
     };
 
-	//events:
+    //////----------END Methods-------------////////////////
+
+	////////---------Events-------------///////////////
+
+	///---dropDown menu--///
 	//click set-sitting button
 	$('.set-setting').click(function(e){
 		e.preventDefault();
@@ -283,6 +333,43 @@ $(document).ready(function(){
 		
 	});
 
+	
+
+	// press Cancel
+	$('.top-3 button').click(function(e){
+		closeMenuTop3();
+		return false;	
+	});
+	
+	//press ESC
+	$('.top-3').keyup(function(e){
+		if (e.keyCode == 27) {
+			closeMenuTop3(); 
+    	}	
+    	
+	});
+
+	///---tabs part---///
+	$("select").change(function(){
+		iframeElements[numOpenTab].attr('src',$(this).find("option:selected").val());
+		
+	});
+
+	//change hash
+	$(window).on('hashchange',function(e){
+		e.preventDefault();
+		var urlTabPage=window.location.hash;
+		var numTab=fromHrefTonumOpenTab(urlTabPage);
+		if (numTab!=undefined){
+			openTabHtml(window.location.hash);
+		}
+		else{
+			window.location.hash=userInformation.openTab;
+		}
+    		
+	});
+
+	///---search part---///
 	$(".search-box").submit(function(e){
 		e.preventDefault();
 		val=$(this).find("input").val();
@@ -307,39 +394,7 @@ $(document).ready(function(){
 
 	});
 
-	// press Cancel
-	$('.top-3 button').click(function(e){
-		closeMenuTop3();
-		return false;	
-	});
-	
-	//press ESC
-	$('.top-3').keyup(function(e){
-		if (e.keyCode == 27) {
-			closeMenuTop3(); 
-    	}	
-    	
-	});
-
-
-	$("select").change(function(){
-		iframeElements[numOpenTab].attr('src',$(this).find("option:selected").val());
-		
-	});
-
-	//change hash
-	$(window).on('hashchange',function(e){
-		e.preventDefault();
-		var urlTabPage=window.location.hash;
-		var numTab=fromHrefTonumOpenTab(urlTabPage);
-		if (numTab!=undefined){
-			openTabHtml(window.location.hash);
-		}
-		else{
-			window.location.hash=userInformation.openTab;
-		}
-    		
-	});
+	///---------start function------///
 
 	//functions that call when page loading
 	function loadPage(){
@@ -423,7 +478,7 @@ $(document).ready(function(){
 	});
 
 	loadPage();
-
+	/////////////--------------END Event--------//////////
 	
 });
 

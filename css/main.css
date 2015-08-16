@@ -415,7 +415,9 @@ li{
 	border-right: 10px solid transparent;
 	border-bottom: 10px solid black;
 }
-.nav-section:hover  p::after{
+
+.nav-section:hover  p::after,
+.active-nav p::after{
 	margin-top:5px; 
 	border-left: 10px solid transparent;
 	border-right: 10px solid transparent;
@@ -429,10 +431,15 @@ li{
 	
 	
 }
-.nav-section:hover,
-.nav-section:focus{
+.nav-section:hover
+{
 	background-color:rgba(0,0,0,0.5);
 }
+.nav-section:focus,
+.active-nav{
+	background-color: #555539;
+}
+.active-nav ul,
 .nav-section:hover ul{
 display:block;
 position:relative;
