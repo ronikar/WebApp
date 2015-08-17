@@ -211,7 +211,7 @@ $(document).ready(function(){
 
 		}else
 		{
-			iframeElements[numOpenTab].removeAttr("src");
+			iframeElements[numTab].removeAttr("src");
 			siteSelectOptions.hide();
 			externalTab.hide();
 		}
