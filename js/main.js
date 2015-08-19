@@ -208,12 +208,15 @@ $(document).ready(function(){
 			}
 			siteSelectOptions.show();
 			externalTab.show();
+			currTab.find(".selectSite").show();
+
 
 		}else
 		{
 			iframeElements[numTab].removeAttr("src");
 			siteSelectOptions.hide();
 			externalTab.hide();
+			currTab.find(".selectSite").hide();
 		}
 		
 
