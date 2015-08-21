@@ -208,7 +208,7 @@ $(document).ready(function(){
 			}
 			siteSelectOptions.show();
 			externalTab.show();
-			currTab.find(".selectSite").show();
+			//currTab.find(".selectSite").show();
 
 
 		}else
@@ -216,7 +216,7 @@ $(document).ready(function(){
 			iframeElements[numTab].removeAttr("src");
 			siteSelectOptions.hide();
 			externalTab.hide();
-			currTab.find(".selectSite").hide();
+			//currTab.find(".selectSite").hide();
 		}
 		
 
